@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>ChrisBot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-light bg-light">
+      <span class="navbar-brand mb-0 h1">Manpower Calculator</span>
+    </nav>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Selectors</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="selector" placeholder="How many Selectors are we scheduled to have?">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Sick-Calls</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="callouts" placeholder="How many Selectors have called out Sick?">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Upgrades - GW</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="upgrade" placeholder="How many selectors are needed for upgraded jobs?">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Cases per Hour</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="cph" placeholder="How many cases are we projected to finish per hour per selector?">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Estimated Cases</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="totalCases" placeholder="How many total cases are we projected to have?" onkeyup="manpowerCalculator()">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Required WoH</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="woh" placeholder="We need this many more people:">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Deficit Hours</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="hours" placeholder="We need this many more hours:">
+      </div>
+    </div>
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+        function manpowerCalculator() {
+        console.log("Running")
+        var selectors = document.getElementById("selector").value;
+        var callouts = document.getElementById("callouts").value;
+        var upgrade = document.getElementById("upgrade").value;
+        var cph = document.getElementById("cph").value;
+        var totalCases = document.getElementById('totalCases').value;
+
+        var woh = document.getElementById('woh')
+
+        var projectedWorkers = parseInt(selectors) - (parseInt(callouts) + parseInt(upgrade));
+        var estimatedCases = parseInt(projectedWorkers) * parseInt(cph) * 7.1;
+        var caseDeficit =  parseInt(totalCases) - parseInt(estimatedCases);
+
+        var deficitHours1 = (caseDeficit / parseInt(cph));
+
+        var workersNeeded1 = deficitHours1/8;
+        var workersNeeded = workersNeeded1.toFixed();
+
+        var deficitHours = deficitHours1.toFixed();
+
+        
+        console.log(workersNeeded)
+        if (totalCases !== '') {
+            woh.value = workersNeeded;
+            hours.value = deficitHours;
+        }else{
+            woh.value = '';
+        }
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
