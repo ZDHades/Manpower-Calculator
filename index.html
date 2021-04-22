@@ -1,8 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>ChrisBot</title>
-    <!-- Required meta tags -->
+    <title>Manpower Calculator</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -14,6 +13,13 @@
     <nav class="navbar navbar-light bg-light">
       <span class="navbar-brand mb-0 h1">Manpower Calculator</span>
     </nav>
+
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Date</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="date" placeholder="Optional space for the date." onkeyup="manpowerCalculator()">
+      </div>
+    </div>
 
     <div class="form-group row">
       <label class="col-sm-2 col-form-label">Selectors</label>
@@ -50,53 +56,53 @@
       </div>
     </div>
 
+    <p id='output'>Please Input the above fields</p>
+    <p id='delete-me'>If we have workers coming from Capstone, please enter the count below.</p>
+
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Required WoH</label>
+      <label class="col-sm-2 col-form-label">Capstone Labor</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="woh" placeholder="We need this many more people:">
+        <input type="text" class="form-control" id="capstone" placeholder="How many capstone workers will be coming today?" onkeyup="manpowerCalculator()">
       </div>
     </div>
 
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Deficit Hours</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="hours" placeholder="We need this many more hours:">
-      </div>
-    </div>
-      
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <p id='outputWithCapstone'></p>
+
     <script>
         function manpowerCalculator() {
-        console.log("Running")
-        var selectors = document.getElementById("selector").value;
-        var callouts = document.getElementById("callouts").value;
-        var upgrade = document.getElementById("upgrade").value;
-        var cph = document.getElementById("cph").value;
-        var totalCases = document.getElementById('totalCases').value;
+          var selectors = document.getElementById("selector").value;
+          var callouts = document.getElementById("callouts").value;
+          var upgrade = document.getElementById("upgrade").value;
+          var cph = document.getElementById("cph").value;
+          var totalCases = document.getElementById('totalCases').value;
+          var date = document.getElementById('date').value;
+          var WDO = document.getElementById('WDO')
+          var projectedWorkers = parseInt(selectors) - (parseInt(callouts) + parseInt(upgrade));
+          var estimatedCases = parseInt(projectedWorkers) * parseInt(cph) * 7.1;
+          var caseDeficit =  parseInt(totalCases) - parseInt(estimatedCases);
+          var deficitHours1 = (caseDeficit / parseInt(cph));
+          var workersNeeded1 = deficitHours1/8;
+          var workersNeeded = workersNeeded1.toFixed();
+          var deficitHours = deficitHours1.toFixed();
+          var capstone = document.getElementById('capstone').value;
+          var finalCapstone1 = workersNeeded1 - capstone;
+          var finalCapstone = finalCapstone1.toFixed();
 
-        var woh = document.getElementById('woh')
+          if (totalCases !== '' && callouts !== '' && selector !== '' && upgrade !== '' && cph !== '') {
+            if (date !== ''){
+              document.getElementById('output').innerText = `The total workday off count for ${date} is ${workersNeeded}. The workday will be short by ${deficitHours} hours by midnight.`;
+            } else if (date == '') {
+              document.getElementById('output').innerText = `The total workday off count for today is ${workersNeeded}. The workday will be short by ${deficitHours} hours by midnight.`;
+              document.getElementById('outputWithCapstone').innerText = ''
+            }
+          }
 
-        var projectedWorkers = parseInt(selectors) - (parseInt(callouts) + parseInt(upgrade));
-        var estimatedCases = parseInt(projectedWorkers) * parseInt(cph) * 7.1;
-        var caseDeficit =  parseInt(totalCases) - parseInt(estimatedCases);
-
-        var deficitHours1 = (caseDeficit / parseInt(cph));
-
-        var workersNeeded1 = deficitHours1/8;
-        var workersNeeded = workersNeeded1.toFixed();
-
-        var deficitHours = deficitHours1.toFixed();
-
-        
-        console.log(workersNeeded)
-        if (totalCases !== '' && callouts !== '' && selector !== '' && upgrade !== '' && cph !== '') {
-            woh.value = workersNeeded;
-            hours.value = deficitHours;
-        }else{
-            woh.value = '';
+          if (capstone !== '') {
+            document.getElementById('output').innerText = '';
+            document.getElementById('delete-me').innerText = '';
+            document.getElementById('outputWithCapstone').innerText = `The total workday off count for today, after accouting for Capstone is ${finalCapstone}`;
+          }
         }
-    }
     </script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
